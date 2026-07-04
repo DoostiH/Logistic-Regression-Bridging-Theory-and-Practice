@@ -4,14 +4,19 @@ This repository contains the R code and datasets accompanying the book:
 
 > **Practical Challenges in Logistic Regression Modeling**
 > Hassan Doosti
-> Taylor & Francis, 2026
+> Taylor & Francis, 2026 · ISBN 9781041248125
+
+📖 *Book page:* <add Taylor & Francis product URL here>
 
 ---
 
 ## Repository Structure
 
+```
 Practical-Challenges-in-Logistic-Regression-Modeling/
 ├── README.md
+├── ERRATA.md
+├── renv.lock
 ├── data/
 │   └── (datasets used in the book)
 └── R/
@@ -31,20 +36,32 @@ Practical-Challenges-in-Logistic-Regression-Modeling/
     ├── Chapter14_SurveyData.R
     ├── Chapter15_BayesianCausal.R
     └── Chapter16_Reporting.R
+```
+
+The R scripts are organised by chapter and can be run independently.
 
 ---
 
 ## R Version and Packages
 
-All code was written and tested using R version 4.3.3. The R packages
-required for each chapter are listed at the beginning of the respective
-R script and in the corresponding book chapter.
+All code was written and tested using **R version 4.3.3**. The packages required
+for each chapter are listed at the beginning of the respective R script and in the
+corresponding book chapter.
 
-While every effort has been made to ensure the code runs correctly at the
-time of writing, R packages are regularly updated and their behaviour,
-function names, or default arguments may change over time. If you encounter
-any issues, please check the package documentation for your installed version
-and consult the package changelog for any breaking changes.
+While every effort has been made to ensure the code runs correctly at the time of
+writing, R and its packages are updated regularly, and their behaviour, function
+names, or default arguments may change over time. To support exact reproduction,
+the package versions used are recorded in [`renv.lock`](renv.lock); you can restore
+that environment with:
+
+```r
+install.packages("renv")   # if not already installed
+renv::restore()            # installs the exact package versions used in the book
+```
+
+Where a package change materially affects a result reported in the book, it is noted
+in the [errata](ERRATA.md). If you encounter an issue, please check the errata first,
+then open an issue (see **Feedback, Issues, and Errata** below).
 
 ---
 
@@ -52,63 +69,100 @@ and consult the package changelog for any breaking changes.
 
 1. Clone or download the repository:
 
-git clone https://github.com/DoostiH/Practical-Challenges-in-Logistic-Regression-Modeling.git
+   ```bash
+   git clone https://github.com/DoostiH/Practical-Challenges-in-Logistic-Regression-Modeling.git
+   ```
 
-2. Open the R script corresponding to the chapter you are reading.
+2. (Recommended) Restore the exact package environment:
 
-3. Install any required packages listed at the top of the script if you
-have not already done so. For example:
+   ```r
+   renv::restore()
+   ```
 
-install.packages(c("package1", "package2"))
+3. Open the R script corresponding to the chapter you are reading (in the `R/` folder).
 
-4. Run the code in RStudio or any R environment of your choice.
+4. If not using `renv`, install any required packages listed at the top of the script,
+   for example:
+
+   ```r
+   install.packages(c("package1", "package2"))
+   ```
+
+5. Run the code in RStudio or any R environment of your choice.
 
 ---
 
-## Datasets
+## A Note on Datasets
 
-The datasets used in this book are available in the data/ folder.
-Where data are sourced from publicly available repositories or publications,
-appropriate citations and links are provided within the relevant R scripts
-and book chapters.
+Many examples in the book use **simulated data**, which allows the true
+data-generating parameters to be known so that each method's ability to recover them
+can be assessed directly. Where an example is simulated, this is stated in the text.
+
+A smaller number of examples use **real, publicly available datasets** (for example,
+the Cleveland Heart Disease and Pima Indians Diabetes data), which are cited in the
+relevant scripts and chapters. Companion analyses applying selected methods to real
+datasets are being added to this repository over time.
+
+Datasets bundled with the book are in the [`data/`](data/) folder. Where data are
+sourced from public repositories or packages, appropriate citations and links are
+provided within the relevant R scripts and book chapters.
 
 ---
 
 ## Suggested Reading Paths
 
-The book is designed so that most chapters can be read relatively independently
-after Chapter 1. The following reading paths are suggested for readers with
-specific interests:
+The book is designed so that most chapters can be read relatively independently after
+Chapter 1. The following reading paths are suggested for readers with specific interests:
 
-- Clinical and epidemiological researchers: Ch 1 -> Ch 3 -> Ch 13 -> Ch 15 -> Ch 16
-- Machine learning practitioners: Ch 1 -> Ch 5 -> Ch 6 -> Ch 7 -> Ch 10
-- Survey researchers: Ch 1 -> Ch 14 -> Ch 13 -> Ch 9
-- Researchers facing convergence problems: Ch 1 -> Ch 2 -> Ch 3 -> Ch 6
-- Those developing prediction models: Ch 1 -> Ch 5 -> Ch 9 -> Ch 10 -> Ch 16
-- Longitudinal data analysts: Ch 1 -> Ch 11 -> Ch 13 -> Ch 9
-- Causal inference researchers: Ch 1 -> Ch 15 -> Ch 13 -> Ch 16
+- **Clinical and epidemiological researchers:** Ch 1 → Ch 3 → Ch 13 → Ch 15 → Ch 16
+- **Machine learning practitioners:** Ch 1 → Ch 5 → Ch 6 → Ch 7 → Ch 10
+- **Survey researchers:** Ch 1 → Ch 14 → Ch 13 → Ch 9
+- **Researchers facing convergence problems:** Ch 1 → Ch 2 → Ch 3 → Ch 6
+- **Those developing prediction models:** Ch 1 → Ch 5 → Ch 9 → Ch 10 → Ch 16
+- **Longitudinal data analysts:** Ch 1 → Ch 11 → Ch 13 → Ch 9
+- **Causal inference researchers:** Ch 1 → Ch 15 → Ch 13 → Ch 16
+
+---
+
+## Feedback, Issues, and Errata
+
+A list of known errors and corrections is maintained in [`ERRATA.md`](ERRATA.md),
+keyed to the printing of the book so you can check the status against your own copy.
+
+If you encounter a problem with the code, find an error or typo, or have a suggestion
+for improvement, please
+[open an issue](https://github.com/DoostiH/Practical-Challenges-in-Logistic-Regression-Modeling/issues)
+or contact the author directly. Reported items are reviewed, and confirmed corrections
+are added to the errata. Your feedback is welcome and helps strengthen the book for
+future readers.
 
 ---
 
 ## Citation
 
-If you use the code or datasets from this repository in your research,
-please cite the book as:
+If you use the code or datasets from this repository in your research, please cite the
+book as:
 
-Doosti, H. (2026). Practical Challenges in Logistic Regression Modeling.
-Taylor & Francis.
+> Doosti, H. (2026). *Practical Challenges in Logistic Regression Modeling.*
+> Taylor & Francis. ISBN 9781041248125.
 
----
+**BibTeX:**
 
-## Feedback and Issues
-
-If you encounter any problems with the code or have suggestions for improvement,
-please open an issue on this repository or contact the author directly.
-Your feedback is welcome and will help improve future editions of the book.
+```bibtex
+@book{Doosti2026,
+  author    = {Doosti, Hassan},
+  title     = {Practical Challenges in Logistic Regression Modeling},
+  publisher = {Taylor \& Francis},
+  year      = {2026},
+  isbn      = {9781041248125}
+}
+```
 
 ---
 
 ## License
 
-The code in this repository is made available for educational and research
-purposes. Please refer to the book for full terms of use.
+The code in this repository is made available for educational and research purposes.
+<Confirm the licensing terms with the publisher and state them here — e.g., an MIT
+license for the code, or a link to the book's terms of use. Consider adding a
+`LICENSE` file.>
