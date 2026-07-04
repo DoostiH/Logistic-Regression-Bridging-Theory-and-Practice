@@ -6,7 +6,7 @@ This repository contains the R code and datasets accompanying the book:
 > Hassan Doosti
 > Taylor & Francis, 2026 · ISBN 9781041248125
 
-📖 *Book page:* <add Taylor & Francis product URL here>
+📖 *Book page:* <(https://www.taylorfrancis.com/books/mono/10.1201/9781003743675/logistic-regression-hassan-doosti)>
 
 ---
 
