@@ -1,4 +1,4 @@
-# Errata — *Practical Challenges in Logistic Regression Modeling*
+# Errata — *Logistic Regression Bridging Theory and Practice*
 
 Hassan Doosti · Taylor & Francis, 2026 · ISBN 9781041248125
 
