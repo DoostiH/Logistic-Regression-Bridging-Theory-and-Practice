@@ -2,7 +2,7 @@
 # Chapter 2: Complete and Quasi-Complete Separation
 # Figures and Analysis Code
 # -----------------------------------------------------------------------------
-# Practical Challenges in Logistic Regression Modeling
+# Book: Logistic Regression: Bridging Theory and Practice
 # Hassan Doosti
 #
 # This script reproduces all figures and numerical outputs for Chapter 2.
