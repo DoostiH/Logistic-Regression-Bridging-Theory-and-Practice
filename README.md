@@ -17,9 +17,13 @@ This repository contains the R code and datasets accompanying the book:
 Logistic-Regression-Bridging-Theory-and-Practice/
 ├── README.md
 ├── ERRATA.md
-├── renv.lock
+├── sessionInfo.txt
 ├── data/
 │   └── (datasets used in the book)
+├── solutions/
+│   ├── Chapter01_Solutions.R
+│   ├── Chapter02_Solutions.R
+│   └── … through Chapter16_Solutions.R
 └── R/
     ├── Chapter01_Fundamentals.R
     ├── Chapter02_Separation.R
@@ -51,14 +55,9 @@ corresponding book chapter.
 
 While every effort has been made to ensure the code runs correctly at the time of
 writing, R and its packages are updated regularly, and their behaviour, function
-names, or default arguments may change over time. To support exact reproduction,
-the package versions used are recorded in [`renv.lock`](renv.lock); you can restore
-that environment with:
-
-```r
-install.packages("renv")   # if not already installed
-renv::restore()            # installs the exact package versions used in the book
-```
+names, or default arguments may change over time. The exact package versions used
+are recorded in [`sessionInfo.txt`](sessionInfo.txt); readers who wish to reproduce
+results exactly can install the versions listed there.
 
 Where a package change materially affects a result reported in the book, it is noted
 in the [errata](ERRATA.md). If you encounter an issue, please check the errata first,
@@ -74,22 +73,17 @@ then open an issue (see **Feedback, Issues, and Errata** below).
    git clone https://github.com/DoostiH/Logistic-Regression-Bridging-Theory-and-Practice.git
    ```
 
-2. (Recommended) Restore the exact package environment:
+2. Open the R script corresponding to the chapter you are reading (in the `R/` folder).
 
-   ```r
-   renv::restore()
-   ```
-
-3. Open the R script corresponding to the chapter you are reading (in the `R/` folder).
-
-4. If not using `renv`, install any required packages listed at the top of the script,
-   for example:
+3. Install any required packages listed at the top of the script, for example:
 
    ```r
    install.packages(c("package1", "package2"))
    ```
 
-5. Run the code in RStudio or any R environment of your choice.
+   (The exact versions used are listed in `sessionInfo.txt`.)
+
+4. Run the code in RStudio or any R environment of your choice.
 
 ---
 
@@ -107,6 +101,16 @@ datasets are being added to this repository over time.
 Datasets bundled with the book are in the [`data/`](data/) folder. Where data are
 sourced from public repositories or packages, appropriate citations and links are
 provided within the relevant R scripts and book chapters.
+
+---
+
+## Solutions to Exercises
+
+Full worked solutions are provided in the [`solutions/`](solutions/) folder, one script
+per chapter (`Chapter01_Solutions.R` … `Chapter16_Solutions.R`). Each file contains the
+R code for the computational exercises and the conceptual answers as comments. Some
+solutions build on objects created by the corresponding chapter script in `R/`; where
+that is the case, a note at the top of the solution file explains it.
 
 ---
 
@@ -165,6 +169,3 @@ book as:
 ## License
 
 The code in this repository is made available for educational and research purposes.
-<Confirm the licensing terms with the publisher and state them here — e.g., an MIT
-license for the code, or a link to the book's terms of use. Consider adding a
-`LICENSE` file.>
