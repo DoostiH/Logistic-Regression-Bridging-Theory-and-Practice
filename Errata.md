@@ -1,10 +1,7 @@
-# Errata — *Logistic Regression Bridging Theory and Practice*
+Errata — Logistic Regression: Bridging Theory and Practice
 
-Hassan Doosti · Taylor & Francis, 2026 · ISBN 9781041248125
-
-This file lists known errors in the book and their corrections. Entries are keyed to
-the **printing** of the book so you can check whether a given correction applies to
-your copy.
+Hassan Doosti · Chapman and Hall/CRC, 2026
+Print ISBN 9781041248125 · eBook ISBN 9781003743675 · DOI 10.1201/9781003743675
 
 ### How to find your printing
 
