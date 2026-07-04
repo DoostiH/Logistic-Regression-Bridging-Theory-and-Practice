@@ -3,7 +3,7 @@
 #  Chapter 1: Review of Logistic Regression Fundamentals                       #
 #  Supplementary R Code for Figures and Analysis Output                        #
 #                                                                              #
-#  Book: Practical Challenges in Logistic Regression Modeling                  #
+#  Book: Logistic Regression: Bridging Theory and Practice                  #
 #  Author: Hassan Doosti                                                       #
 #                                                                              #
 #  This script generates all figures and analysis output used in Chapter 1.    #
