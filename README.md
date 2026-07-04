@@ -1,19 +1,20 @@
-# Practical Challenges in Logistic Regression Modeling
+# Logistic Regression: Bridging Theory and Practice
 
 This repository contains the R code and datasets accompanying the book:
 
-> **Practical Challenges in Logistic Regression Modeling**
+> **Logistic Regression: Bridging Theory and Practice**
 > Hassan Doosti
-> Taylor & Francis, 2026 · ISBN 9781041248125
+> Chapman and Hall/CRC (Taylor & Francis), 2026
+> Print ISBN 9781041248125 · eBook ISBN 9781003743675 · DOI 10.1201/9781003743675
 
-📖 *Book page:* <(https://www.taylorfrancis.com/books/mono/10.1201/9781003743675/logistic-regression-hassan-doosti)>
+📖 *Book page:* https://www.taylorfrancis.com/books/mono/10.1201/9781003743675/logistic-regression-hassan-doosti
 
 ---
 
 ## Repository Structure
 
 ```
-Practical-Challenges-in-Logistic-Regression-Modeling/
+Logistic-Regression-Bridging-Theory-and-Practice/
 ├── README.md
 ├── ERRATA.md
 ├── renv.lock
@@ -70,7 +71,7 @@ then open an issue (see **Feedback, Issues, and Errata** below).
 1. Clone or download the repository:
 
    ```bash
-   git clone https://github.com/DoostiH/Practical-Challenges-in-Logistic-Regression-Modeling.git
+   git clone https://github.com/DoostiH/Logistic-Regression-Bridging-Theory-and-Practice.git
    ```
 
 2. (Recommended) Restore the exact package environment:
@@ -131,7 +132,7 @@ keyed to the printing of the book so you can check the status against your own c
 
 If you encounter a problem with the code, find an error or typo, or have a suggestion
 for improvement, please
-[open an issue](https://github.com/DoostiH/Practical-Challenges-in-Logistic-Regression-Modeling/issues)
+[open an issue](https://github.com/DoostiH/Logistic-Regression-Bridging-Theory-and-Practice/issues)
 or contact the author directly. Reported items are reviewed, and confirmed corrections
 are added to the errata. Your feedback is welcome and helps strengthen the book for
 future readers.
@@ -143,17 +144,18 @@ future readers.
 If you use the code or datasets from this repository in your research, please cite the
 book as:
 
-> Doosti, H. (2026). *Practical Challenges in Logistic Regression Modeling.*
-> Taylor & Francis. ISBN 9781041248125.
+> Doosti, H. (2026). *Logistic Regression: Bridging Theory and Practice.*
+> Chapman and Hall/CRC. https://doi.org/10.1201/9781003743675
 
 **BibTeX:**
 
 ```bibtex
 @book{Doosti2026,
   author    = {Doosti, Hassan},
-  title     = {Practical Challenges in Logistic Regression Modeling},
-  publisher = {Taylor \& Francis},
+  title     = {Logistic Regression: Bridging Theory and Practice},
+  publisher = {Chapman and Hall/CRC},
   year      = {2026},
+  doi       = {10.1201/9781003743675},
   isbn      = {9781041248125}
 }
 ```
