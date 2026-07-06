@@ -591,9 +591,9 @@ ggsave("figures/fig9_9_cv_auc.jpeg", fig9_9, width = 8, height = 5,
        dpi = 300, device = "jpeg")
 cat("Saved: figures/fig9_9_cv_auc.jpeg\n")
 # ============================================================================
-# Section 9.11: Real Data Example
+# Section 9.11: Simulated Example
 # ============================================================================
-cat("Creating real data example...\n")
+cat("Creating simulated clinical data example...\n")
 set.seed(789)
 n_real <- 600
 # Simulate clinical data
