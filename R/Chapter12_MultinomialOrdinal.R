@@ -411,11 +411,22 @@ nonprop_model <- vglm(y ~ x1 + x2 + x3,
                       family = cumulative(parallel = FALSE),
                       data = ord_data)
 # Likelihood ratio test
-ll_prop <- logLik(ord_model)
+ll_prop    <- logLik(ord_model)
 ll_nonprop <- logLik(nonprop_model)
-lrt_stat <- -2 * (as.numeric(ll_prop) - as.numeric(ll_nonprop))
-df_diff <- attr(ll_nonprop, "df") - attr(ll_prop, "df")
-lrt_pval <- pchisq(lrt_stat, df = df_diff, lower.tail = FALSE)
+lrt_stat   <- -2 * (as.numeric(ll_prop) - as.numeric(ll_nonprop))
+
+# Degrees of freedom for the proportional-odds LRT.
+# Relaxing proportional odds lets each predictor have a separate coefficient at
+# every threshold instead of one shared coefficient. For p predictors and K
+# outcome categories, the PO model has p slopes while the non-PO model has
+# p*(K-1) slopes, so the test has df = p*(K-1) - p = p*(K-2).
+# Here p = 3 predictors and K = 3 categories, giving df = 3.
+# (We compute df from the model structure rather than from the logLik "df"
+#  attribute, because VGAM's logLik does not store df consistently with clm/polr.)
+n_pred  <- 3
+n_cat   <- length(levels(ord_data$y))     # K = 3
+df_diff <- n_pred * (n_cat - 2)           # = 3
+lrt_pval <- pchisq(lrt_stat, df = df_diff, lower.tail = FALSE)   # = 0.674
 sink("output/proportional_odds_test.txt")
 cat("=== Test of Proportional Odds Assumption ===\n\n")
 cat("--- Likelihood Ratio Test ---\n")
