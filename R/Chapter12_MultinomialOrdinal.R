@@ -13,6 +13,7 @@ library(ordinal)
 library(tidyverse)
 library(ggplot2)
 library(gridExtra)
+multinom <- nnet::multinom
 # Set seed for reproducibility
 set.seed(123)
 # Create output directories if they don't exist
