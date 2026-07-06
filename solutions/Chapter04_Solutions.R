@@ -61,7 +61,8 @@ cat("Dispersion:", disp, "\n")
 # Solution 4.5
 library(lme4)
 
-glmm_mod <- glmer(cbind(y, m-y) ~ x + (1|1:n), family = binomial, data = data)
+data$obs <- factor(1:nrow(data))
+glmm_mod <- glmer(cbind(y, m - y) ~ x + (1 | obs), family = binomial, data = data)
 
 # Variance component
 VarCorr(glmm_mod)
