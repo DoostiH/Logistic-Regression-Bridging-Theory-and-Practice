@@ -13,6 +13,7 @@ library(ordinal)
 library(tidyverse)
 library(ggplot2)
 library(gridExtra)
+# VGAM (loaded above) masks nnet::multinom; alias it back so multinom() calls use nnet's version
 multinom <- nnet::multinom
 # Set seed for reproducibility
 set.seed(123)
