@@ -422,7 +422,8 @@ ggsave("figures/fig6_8_centering_effect.jpeg", fig6_8, width = 7, height = 5,
        dpi = 300, device = "jpeg")
 cat("Saved: figures/fig6_8_centering_effect.jpeg\n")
 # ============================================================================
-# Section 6.9: Real Data Example - South African Heart Disease
+# Section 6.9: Simulated Example - Heart Disease
+#   (simulated data modeled on the structure of the South African Heart Disease dataset)
 # ============================================================================
 cat("Analyzing real data example...\n")
 # Create a realistic heart disease dataset
