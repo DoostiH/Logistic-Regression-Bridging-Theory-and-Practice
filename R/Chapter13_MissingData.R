@@ -506,7 +506,7 @@ ggsave("figures/fig13_8_sensitivity_analysis.jpeg", fig13_8, width = 8, height =
        dpi = 300, device = "jpeg")
 cat("Saved: figures/fig13_8_sensitivity_analysis.jpeg\n")
 # ============================================================================
-# Section 13.9: Real Data Example - Clinical Trial Simulation
+# Section 13.9: Simulated Clinical Trial Example
 # ============================================================================
 cat("Creating clinical trial example...\n")
 # Simulate realistic clinical trial data
