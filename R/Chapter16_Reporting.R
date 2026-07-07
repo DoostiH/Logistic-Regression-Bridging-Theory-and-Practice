@@ -359,8 +359,13 @@ sink()
 cat("Performing bootstrap validation...\n")
 set.seed(789)
 n_boot <- 200
-boot_auc <- numeric(n_boot)
-boot_brier <- numeric(n_boot)
+# Efron-Harrell optimism-corrected bootstrap. For each replication the model is
+# fit on the bootstrap sample, and its performance is measured BOTH on that
+# bootstrap sample (where it was trained) and on the original sample. The
+# optimism is the average difference (bootstrap - original); the corrected
+# statistic subtracts this optimism from the apparent value.
+optimism_auc_vec <- numeric(n_boot)
+optimism_brier_vec <- numeric(n_boot)
 for (b in 1:n_boot) {
   boot_idx <- sample(1:nrow(hf_complete), replace = TRUE)
   boot_data <- hf_complete[boot_idx, ]
@@ -368,16 +373,23 @@ for (b in 1:n_boot) {
                       comorbidity_count + prior_hf_admission + length_of_stay +
                       sodium + bnp,
                     family = binomial, data = boot_data)
-  orig_pred <- predict(boot_model, newdata = hf_complete, type = "response")
-  boot_pred <- predict(boot_model, type = "response")
-  boot_auc[b] <- as.numeric(auc(roc(hf_complete$readmit_30, orig_pred, quiet = TRUE)))
-  boot_brier[b] <- mean((orig_pred - hf_complete$readmit_30)^2)
+  # Performance on the bootstrap sample (where the model was trained)
+  boot_pred  <- predict(boot_model, type = "response")
+  auc_boot   <- as.numeric(auc(roc(boot_data$readmit_30, boot_pred, quiet = TRUE)))
+  brier_boot <- mean((boot_pred - boot_data$readmit_30)^2)
+  # Performance of the SAME model on the original sample
+  orig_pred  <- predict(boot_model, newdata = hf_complete, type = "response")
+  auc_orig   <- as.numeric(auc(roc(hf_complete$readmit_30, orig_pred, quiet = TRUE)))
+  brier_orig <- mean((orig_pred - hf_complete$readmit_30)^2)
+  # Optimism for this replication
+  optimism_auc_vec[b]   <- auc_boot - auc_orig
+  optimism_brier_vec[b] <- brier_boot - brier_orig
 }
 apparent_auc <- as.numeric(auc_val)
-optimism_auc <- mean(boot_auc) - apparent_auc
+optimism_auc <- mean(optimism_auc_vec)
 corrected_auc <- apparent_auc - optimism_auc
 apparent_brier <- brier_score
-optimism_brier <- mean(boot_brier) - apparent_brier
+optimism_brier <- mean(optimism_brier_vec)
 corrected_brier <- apparent_brier - optimism_brier
 sink("output/bootstrap_validation.txt")
 cat("=== Bootstrap Internal Validation ===\n\n")
@@ -386,8 +398,8 @@ cat("--- AUC ---\n")
 cat("Apparent AUC:", round(apparent_auc, 3), "\n")
 cat("Optimism:", round(optimism_auc, 3), "\n")
 cat("Optimism-corrected AUC:", round(corrected_auc, 3), "\n")
-cat("Bootstrap 95% CI:", round(quantile(boot_auc, 0.025), 3), "-",
-    round(quantile(boot_auc, 0.975), 3), "\n\n")
+cat("95% CI (apparent AUC):", round(auc_ci[1], 3), "-",
+    round(auc_ci[3], 3), "\n\n")
 cat("--- Brier Score ---\n")
 cat("Apparent Brier:", round(apparent_brier, 4), "\n")
 cat("Optimism:", round(optimism_brier, 4), "\n")
