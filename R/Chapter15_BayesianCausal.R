@@ -48,7 +48,7 @@ beta3_true <- 0.6
 lp <- beta0_true + beta1_true * x1 + beta2_true * x2 + beta3_true * x3
 prob_y <- plogis(lp)
 y <- rbinom(n_bayes, 1, prob_y)
-bayes_data <- data.frame(y = y, x1 = x1, x2 = x2, x3 = factor(x3))
+bayes_data <- data.frame(y = y, x1 = x1, x2 = x2, x3 = x3)
 sink("output/bayesian_data_summary.txt")
 cat("=== Bayesian Analysis Data Summary ===\n\n")
 cat("Sample size:", n_bayes, "\n")
@@ -132,7 +132,7 @@ if (requireNamespace("rstanarm", quietly = TRUE)) {
   print(bayes_summary)
   cat("\n--- Odds Ratios (Posterior Median and 95% Credible Interval) ---\n")
   or_summary <- data.frame(
-    Variable = c("(Intercept)", "x1", "x2", "x31"),
+    Variable = c("(Intercept)", "x1", "x2", "x3"),
     Median_OR = round(exp(apply(posterior_samples[, 1:4], 2, median)), 3),
     CI_Lower = round(exp(apply(posterior_samples[, 1:4], 2, quantile, 0.025)), 3),
     CI_Upper = round(exp(apply(posterior_samples[, 1:4], 2, quantile, 0.975)), 3)
@@ -142,7 +142,7 @@ if (requireNamespace("rstanarm", quietly = TRUE)) {
   cat("P(beta_x1 > 0):", round(mean(posterior_samples[, "x1"] > 0), 3), "\n")
   cat("P(OR_x1 > 1.5):", round(mean(exp(posterior_samples[, "x1"]) > 1.5), 3), "\n")
   cat("P(beta_x2 < 0):", round(mean(posterior_samples[, "x2"] < 0), 3), "\n")
-  cat("P(OR_x3 > 1):", round(mean(exp(posterior_samples[, "x31"]) > 1), 3), "\n")
+  cat("P(OR_x3 > 1):", round(mean(exp(posterior_samples[, "x3"]) > 1), 3), "\n")
   cat("\n--- Comparison with Frequentist Model ---\n")
   freq_coef <- coef(freq_model)
   freq_se <- sqrt(diag(vcov(freq_model)))
@@ -166,11 +166,11 @@ if (requireNamespace("rstanarm", quietly = TRUE)) {
   post_df <- data.frame(
     x1 = posterior_samples[, "x1"],
     x2 = posterior_samples[, "x2"],
-    x31 = posterior_samples[, "x31"]
+    x3 = posterior_samples[, "x3"]
   ) %>%
     pivot_longer(everything(), names_to = "Variable", values_to = "Value")
   true_values <- data.frame(
-    Variable = c("x1", "x2", "x31"),
+    Variable = c("x1", "x2", "x3"),
     True = c(beta1_true, beta2_true, beta3_true)
   )
   fig15_2 <- ggplot(post_df, aes(x = Value)) +
@@ -190,7 +190,7 @@ if (requireNamespace("rstanarm", quietly = TRUE)) {
   # Figure 15.3: Trace plots
   jpeg("figures/fig15_3_trace_plots.jpeg", width = 10, height = 6, units = "in",
        res = 300, quality = 95)
-  plot(bayes_model, plotfun = "trace")
+  print(plot(bayes_model, plotfun = "trace"))
   dev.off()
   cat("Saved: figures/fig15_3_trace_plots.jpeg\n")
   # Convergence diagnostics
@@ -270,6 +270,10 @@ cat("\n=== PART B: CAUSAL INFERENCE METHODS ===\n\n")
 # ============================================================================
 # Section 15.6: Simulate Observational Data with Confounding
 # ============================================================================
+# Seed for the causal-inference simulation, so that the propensity-score
+# matching, IPW, and E-value results below are reproducible independently
+# of the (stochastic) MCMC sampling in the Bayesian section above.
+set.seed(744)
 cat("Simulating observational data with confounding...\n")
 n_causal <- 1000
 # Confounders
@@ -432,12 +436,12 @@ if (requireNamespace("MatchIt", quietly = TRUE)) {
     # Figure 15.5: Love plot
     jpeg("figures/fig15_5_love_plot.jpeg", width = 8, height = 5, units = "in",
          res = 300, quality = 95)
-    love.plot(match_out,
+    print(love.plot(match_out,
               stats = "mean.diffs",
               thresholds = c(m = 0.1),
               abs = TRUE,
               var.order = "unadjusted",
-              colors = c("grey60", "black"))
+              colors = c("grey60", "black")))
     dev.off()
     cat("Saved: figures/fig15_5_love_plot.jpeg\n")
   }
@@ -603,19 +607,40 @@ cat("Saved: figures/fig15_7_methods_comparison.jpeg\n")
 # Section 15.13: Sensitivity Analysis (E-value)
 # ============================================================================
 cat("Performing sensitivity analysis...\n")
-calculate_evalue <- function(or, lo = NULL, hi = NULL) {
-  evalue_point <- if (or > 1) {
-    or + sqrt(or * (or - 1))
-  } else {
-    1
+# E-value sensitivity analysis (VanderWeele & Ding, 2017).
+# The E-value is defined on the RISK-RATIO scale: E = RR + sqrt(RR * (RR - 1)).
+# Because the outcome in this example is common (prevalence well above 15%),
+# the odds ratio is first converted to an approximate risk ratio via
+# RR = sqrt(OR) (VanderWeele & Ding, 2017, Table 2); a protective effect
+# (RR < 1) is then inverted so the E-value is reported on a scale >= 1.
+# The EValue package performs this OR-to-RR conversion, inversion, and the
+# CI handling (E-value = 1 when the interval crosses the null) automatically.
+if (requireNamespace("EValue", quietly = TRUE)) {
+  ev_tab <- EValue::evalues.OR(est = matched_or,
+                               lo = matched_ci[1], hi = matched_ci[2],
+                               rare = FALSE)
+  # The CI E-value is stored in either the "lower" or "upper" column depending on
+  # the direction of the interval; the other is NA. When the interval crosses the
+  # null, the reported CI E-value is 1. Take the non-NA of the two columns.
+  ev_ci_vals <- ev_tab["E-values", c("lower", "upper")]
+  ev_ci <- ev_ci_vals[!is.na(ev_ci_vals)]
+  ev_ci <- if (length(ev_ci) == 0) 1 else as.numeric(ev_ci[1])
+  evalue_matched <- list(point = as.numeric(ev_tab["E-values", "point"]),
+                         ci    = ev_ci)
+} else {
+  # Base-R fallback implementing the same common-outcome method.
+  ev_from_rr <- function(rr) {
+    if (rr < 1) rr <- 1 / rr        # invert protective effects
+    rr + sqrt(rr * (rr - 1))
   }
-  evalue_ci <- 1
-  if (!is.null(lo) && lo > 1) {
-    evalue_ci <- lo + sqrt(lo * (lo - 1))
-  }
-  return(list(point = evalue_point, ci = evalue_ci))
+  rr_point <- sqrt(matched_or)      # OR -> RR for a common outcome
+  rr_lo    <- sqrt(matched_ci[1])
+  rr_hi    <- sqrt(matched_ci[2])
+  evalue_point <- ev_from_rr(rr_point)
+  # CI E-value: 1 if the interval crosses the null, else the limit nearer null
+  evalue_ci <- if (rr_lo > 1) ev_from_rr(rr_lo) else if (rr_hi < 1) ev_from_rr(rr_hi) else 1
+  evalue_matched <- list(point = evalue_point, ci = evalue_ci)
 }
-evalue_matched <- calculate_evalue(matched_or, matched_ci[1], matched_ci[2])
 sink("output/sensitivity_analysis.txt")
 cat("=== Sensitivity Analysis for Unmeasured Confounding ===\n\n")
 cat("--- E-value Analysis (for PS Matching estimate) ---\n")
@@ -644,7 +669,7 @@ if (exists("bayes_model")) {
   cat("Posterior summaries (median OR, 95% CrI):\n")
   cat("  x1: OR =", round(exp(median(posterior_samples[, "x1"])), 3), "\n")
   cat("  x2: OR =", round(exp(median(posterior_samples[, "x2"])), 3), "\n")
-  cat("  x3: OR =", round(exp(median(posterior_samples[, "x31"])), 3), "\n\n")
+  cat("  x3: OR =", round(exp(median(posterior_samples[, "x3"])), 3), "\n\n")
   cat("Probability statements:\n")
   cat("  P(OR_x1 > 1) =", round(mean(exp(posterior_samples[, "x1"]) > 1), 3), "\n")
   cat("  P(OR_x2 < 1) =", round(mean(exp(posterior_samples[, "x2"]) < 1), 3), "\n")
