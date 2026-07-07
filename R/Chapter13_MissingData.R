@@ -48,7 +48,7 @@ linear_pred <- beta0 + beta1 * x1 + beta2 * x2 + beta3 * x3
 prob_y <- plogis(linear_pred)
 y <- rbinom(n, 1, prob_y)
 # Complete dataset
-complete_data <- data.frame(y = y, x1 = x1, x2 = x2, x3 = factor(x3))
+complete_data <- data.frame(y = y, x1 = x1, x2 = x2, x3 = x3)
 # Create datasets with different missing mechanisms
 # 1. MCAR: Missing completely at random (20% of x2 missing randomly)
 set.seed(456)
@@ -278,8 +278,8 @@ se_wide[, -1] <- round(se_wide[, -1], 4)
 print(as.data.frame(se_wide))
 cat("\n--- Bias (relative to true values) ---\n")
 true_coefs <- c(beta0, beta1, beta2, beta3)
-names(true_coefs) <- c("(Intercept)", "x1", "x2", "x31")
-for (var in c("x1", "x2", "x31")) {
+names(true_coefs) <- c("(Intercept)", "x1", "x2", "x3")
+for (var in c("x1", "x2", "x3")) {
   cc_est <- cc_mar_results$Estimate[cc_mar_results$Variable == var]
   mi_est <- mi_results$Estimate[mi_results$Variable == var]
   true_val <- true_coefs[var]
@@ -289,7 +289,7 @@ for (var in c("x1", "x2", "x31")) {
   cat("  MI:", round(mi_est, 4), "(Bias:", round(mi_est - true_val, 4), ")\n\n")
 }
 cat("--- Efficiency Gain from MI ---\n")
-for (var in c("x1", "x2", "x31")) {
+for (var in c("x1", "x2", "x3")) {
   cc_se <- cc_mar_results$SE[cc_mar_results$Variable == var]
   mi_se <- mi_results$SE[mi_results$Variable == var]
   eff_gain <- (cc_se / mi_se)^2
@@ -299,11 +299,11 @@ for (var in c("x1", "x2", "x31")) {
 sink()
 # Figure 13.5: CC vs MI comparison
 comparison_plot <- all_results %>%
-  filter(Variable %in% c("x1", "x2", "x31")) %>%
+  filter(Variable %in% c("x1", "x2", "x3")) %>%
   mutate(True = case_when(
     Variable == "x1" ~ beta1,
     Variable == "x2" ~ beta2,
-    Variable == "x31" ~ beta3
+    Variable == "x3" ~ beta3
   ))
 fig13_5 <- ggplot(comparison_plot, aes(x = Variable, y = Estimate, shape = Method)) +
   geom_point(position = position_dodge(width = 0.5), size = 3, colour = "black") +
@@ -362,10 +362,10 @@ run_simulation <- function(n_sim = 200, n = 500, miss_rate = 0.25, seed = 999) {
           method = "CC",
           x1_est = coef(cc_fit)["x1"],
           x2_est = coef(cc_fit)["x2"],
-          x3_est = coef(cc_fit)["x31"],
+          x3_est = coef(cc_fit)["x3"],
           x1_se = sqrt(vcov(cc_fit)["x1", "x1"]),
           x2_se = sqrt(vcov(cc_fit)["x2", "x2"]),
-          x3_se = sqrt(vcov(cc_fit)["x31", "x31"])
+          x3_se = sqrt(vcov(cc_fit)["x3", "x3"])
         ))
       }
       # Multiple imputation
@@ -383,10 +383,10 @@ run_simulation <- function(n_sim = 200, n = 500, miss_rate = 0.25, seed = 999) {
           method = "MI",
           x1_est = mi_sum$estimate[mi_sum$term == "x1"],
           x2_est = mi_sum$estimate[mi_sum$term == "x2"],
-          x3_est = mi_sum$estimate[mi_sum$term == "x31"],
+          x3_est = mi_sum$estimate[mi_sum$term == "x3"],
           x1_se = mi_sum$std.error[mi_sum$term == "x1"],
           x2_se = mi_sum$std.error[mi_sum$term == "x2"],
-          x3_se = mi_sum$std.error[mi_sum$term == "x31"]
+          x3_se = mi_sum$std.error[mi_sum$term == "x3"]
         ))
       }
     }
